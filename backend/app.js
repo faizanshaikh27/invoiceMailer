@@ -37,8 +37,21 @@ app.post('/upload', upload.array('invoices', 60), async (req, res) => {
     doc.pipe(stream);
 
     for (const file of req.files) {
-      doc.addPage();
-      doc.image(file.path, {
+      const imagePath = file.path;
+      doc.addPage({
+        size: 'A4',
+        margins: { top: 40, bottom: 40, left: 40, right: 40 }
+      });
+
+      // Draw border
+      doc
+        .rect(20, 20, doc.page.width - 40, doc.page.height - 40)
+        .strokeColor('#cccccc')
+        .lineWidth(1)
+        .stroke();
+
+      // Add image
+      doc.image(imagePath, {
         fit: [500, 700],
         align: 'center',
         valign: 'center'
@@ -69,7 +82,7 @@ app.post('/upload', upload.array('invoices', 60), async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Something went wrong.' });
+    res.status(500).json({ error: 'Something went wrong while generating or sending PDF.' });
   }
 });
 
