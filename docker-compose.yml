@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: invoice_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+
+  frontend:
+    build: ./frontend
+    container_name: invoice_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
